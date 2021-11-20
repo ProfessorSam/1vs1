@@ -1,15 +1,14 @@
 package com.github.gamedipoxx.oneVsOne.arena;
 
-import java.lang.annotation.Documented;
 import java.util.UUID;
-
-import javax.management.DescriptorKey;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import com.github.gamedipoxx.oneVsOne.Messages;
 import com.github.gamedipoxx.oneVsOne.OneVsOne;
 import com.github.gamedipoxx.oneVsOne.arena.GameState.GameStates;
 import com.github.gamedipoxx.oneVsOne.events.PlayerJoinArenaEvent;
@@ -17,7 +16,8 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
 public class Arena {
 	private UUID arenaUuid;
-	private MVWorldManager worldmanager;
+	private static Location lobby = new Location(Bukkit.getWorld(OneVsOne.getPlugin().getConfig().getString("Lobby.World")), OneVsOne.getPlugin().getConfig().getInt("Lobby.X"), OneVsOne.getPlugin().getConfig().getInt("Lobby.Y"), OneVsOne.getPlugin().getConfig().getInt("Lobby.Z"), OneVsOne.getPlugin().getConfig().getLong("Lobby.Pitch"), OneVsOne.getPlugin().getConfig().getLong("Lobby.Yaw"));
+	private static MVWorldManager worldmanager;
 	private String worldname;
 	int playercount;
 	private Location spawn1;
@@ -66,14 +66,36 @@ public class Arena {
 		
 	}
 	
-	public void destroyArena() {
-		worldmanager.deleteWorld(worldname); //delete arena
+	public static void deleteAndUnregisterArena(Arena arena) { //teleports players to Lobby and destroy the arena and unregister it
+		World arenaworld = Bukkit.getWorld(arena.getArenaName());
+		if(arenaworld == null) {
+			return;
+		}
+		for(Player player : arenaworld.getPlayers()) {
+			player.teleport(lobby);
+			player.sendMessage(Messages.PREFIX.getString() + Messages.TELEPORTTOLOBBY.getString());
+		}
+		worldmanager.deleteWorld(arenaworld.getName());
+		
 	}
 	
 	public static Arena createAndRegisterArena() { //create a arena (Name based on the amout of arenas) and register it in the OneVsOne Class
 		Arena arena = new Arena(OneVsOne.getPlugin().getConfig().getString("Arenaworld"));
 		OneVsOne.getArena().add(arena);
 		arena.setGameState(GameStates.WAITING);
+		return arena;
+	}
+	
+	public static Arena getArena(String arenaname) {
+		Arena arena = null;
+		for(Arena i : OneVsOne.getArena()) {
+			if(i.getArenaName() == arenaname) {
+				arena = i;
+			}
+			else {
+				continue;
+			}
+		}
 		return arena;
 	}
 	

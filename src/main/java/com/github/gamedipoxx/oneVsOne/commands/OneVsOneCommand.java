@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.github.gamedipoxx.oneVsOne.Messages;
 import com.github.gamedipoxx.oneVsOne.OneVsOne;
 import com.github.gamedipoxx.oneVsOne.arena.Arena;
 
@@ -34,7 +35,15 @@ public class OneVsOneCommand implements CommandExecutor {
 						}
 					} 
 				case("delete"):
-					
+					if(args.length != 2) {
+						break;
+					}
+					if(Arena.getArena(args[1]) == null) {
+						player.sendMessage(Messages.PREFIX.getString() + Messages.NOARENAFOUND.getString());
+					}
+					else {
+						Arena.deleteAndUnregisterArena(Arena.getArena(args[1]));
+					}
 				
 				default:
 					break;
