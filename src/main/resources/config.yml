@@ -1,0 +1,13 @@
+Arenaworld: "world"
+Spawn1:
+   X: 100
+   Y: 100
+   Z: 100
+   Pitch: 100
+   Yaw: 100
+Spawn2: 
+   X: 150
+   Y: 150
+   Z: 150
+   Pitch: 100
+   Yaw: 100
