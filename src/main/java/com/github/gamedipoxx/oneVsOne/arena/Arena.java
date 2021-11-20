@@ -1,10 +1,14 @@
 package com.github.gamedipoxx.oneVsOne.arena;
 
+import java.lang.annotation.Documented;
 import java.util.UUID;
+
+import javax.management.DescriptorKey;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import com.github.gamedipoxx.oneVsOne.OneVsOne;
 import com.github.gamedipoxx.oneVsOne.arena.GameState.GameStates;
@@ -20,15 +24,15 @@ public class Arena {
 	private Location spawn2;
 	private GameStates gameState;
 	
-	public Arena(String arenaname) {
+	public Arena(@NotNull String arenaname) {
 		UUID.randomUUID();
 		if(Bukkit.getWorld(arenaname) == null) {
 			OneVsOne.getPlugin().getLogger().warning("Cant find world " + arenaname);
 			Bukkit.getServer().getPluginManager().disablePlugin(OneVsOne.getPlugin());
 		}
-		worldname = "Arena" + OneVsOne.getArena().size() + 1;
-		worldmanager = OneVsOne.getMultiversecore().getMVWorldManager();
-		worldmanager.cloneWorld(arenaname, worldname);
+		worldname = "Arena" + OneVsOne.getArena().size() + 1; //Name of the world and Arenaname
+		worldmanager = OneVsOne.getMultiversecore().getMVWorldManager(); //set Multiverse wolrdmanager
+		worldmanager.cloneWorld(arenaname, worldname); //clone world
 		playercount = 0;
 		
 		spawn1 = initSpawn(1);
@@ -37,6 +41,7 @@ public class Arena {
 		
 	}
 	
+	//Init the Spawn from Config
 	private Location initSpawn(int spawn) {
 		double x = OneVsOne.getPlugin().getConfig().getDouble("Spawn" + spawn + ".X");
 		double y = OneVsOne.getPlugin().getConfig().getDouble("Spawn" + spawn + ".Y");
@@ -48,7 +53,7 @@ public class Arena {
 		
 	}
 	
-	public void joinPlayer(Player player) {
+	public void joinPlayer(Player player) { //adds a player to the arena and fires event
 		if(playercount == 0) {
 			player.teleport(spawn1);
 			return;
@@ -62,10 +67,10 @@ public class Arena {
 	}
 	
 	public void destroyArena() {
-		worldmanager.deleteWorld(worldname);
+		worldmanager.deleteWorld(worldname); //delete arena
 	}
 	
-	public static Arena createAndRegisterArena() {
+	public static Arena createAndRegisterArena() { //create a arena (Name based on the amout of arenas) and register it in the OneVsOne Class
 		Arena arena = new Arena(OneVsOne.getPlugin().getConfig().getString("Arenaworld"));
 		OneVsOne.getArena().add(arena);
 		arena.setGameState(GameStates.WAITING);
