@@ -14,6 +14,7 @@ import com.github.gamedipoxx.oneVsOne.Messages;
 import com.github.gamedipoxx.oneVsOne.OneVsOne;
 import com.github.gamedipoxx.oneVsOne.arena.GameState.GameStates;
 import com.github.gamedipoxx.oneVsOne.events.PlayerJoinArenaEvent;
+import com.github.gamedipoxx.oneVsOne.events.PlayerLeaveArenaEvent;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
 public class Arena {
@@ -68,7 +69,7 @@ public class Arena {
 		
 	}
 	
-	public static void deleteAndUnregisterArena(Arena arena) { //teleports players to Lobby and destroy the arena and unregister it
+	public static void deleteAndUnregisterArena(Arena arena) { //teleports players to Lobby and destroy the arena and unregister it and fire a Event
 		World arenaworld = Bukkit.getWorld(arena.getArenaName());
 		if(arenaworld == null) {
 			return;
@@ -76,6 +77,7 @@ public class Arena {
 		for(Player player : arenaworld.getPlayers()) {
 			player.teleport(lobby);
 			player.sendMessage(Messages.PREFIX.getString() + Messages.TELEPORTTOLOBBY.getString());
+			Bukkit.getServer().getPluginManager().callEvent(new PlayerLeaveArenaEvent(arena, player));
 		}
 		worldmanager.deleteWorld(arenaworld.getName());
 		
