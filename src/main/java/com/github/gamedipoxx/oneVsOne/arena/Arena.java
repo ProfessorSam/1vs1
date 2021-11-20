@@ -1,7 +1,9 @@
 package com.github.gamedipoxx.oneVsOne.arena;
 
+import java.time.Instant;
 import java.util.UUID;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,7 +17,7 @@ import com.github.gamedipoxx.oneVsOne.events.PlayerJoinArenaEvent;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
 public class Arena {
-	private UUID arenaUuid;
+	private String arenaUuid;
 	private static Location lobby = new Location(Bukkit.getWorld(OneVsOne.getPlugin().getConfig().getString("Lobby.World")), OneVsOne.getPlugin().getConfig().getInt("Lobby.X"), OneVsOne.getPlugin().getConfig().getInt("Lobby.Y"), OneVsOne.getPlugin().getConfig().getInt("Lobby.Z"), OneVsOne.getPlugin().getConfig().getLong("Lobby.Pitch"), OneVsOne.getPlugin().getConfig().getLong("Lobby.Yaw"));
 	private static MVWorldManager worldmanager;
 	private String worldname;
@@ -25,12 +27,12 @@ public class Arena {
 	private GameStates gameState;
 	
 	public Arena(@NotNull String arenaname) {
-		UUID.randomUUID();
+		arenaUuid = "" + Instant.now().getEpochSecond() + RandomUtils.nextInt();
 		if(Bukkit.getWorld(arenaname) == null) {
 			OneVsOne.getPlugin().getLogger().warning("Cant find world " + arenaname);
 			Bukkit.getServer().getPluginManager().disablePlugin(OneVsOne.getPlugin());
 		}
-		worldname = "Arena" + OneVsOne.getArena().size() + 1; //Name of the world and Arenaname
+		worldname = arenaUuid;
 		worldmanager = OneVsOne.getMultiversecore().getMVWorldManager(); //set Multiverse wolrdmanager
 		worldmanager.cloneWorld(arenaname, worldname); //clone world
 		playercount = 0;
