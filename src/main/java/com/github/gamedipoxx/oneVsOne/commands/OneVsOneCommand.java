@@ -33,12 +33,14 @@ public class OneVsOneCommand implements CommandExecutor {
 							}
 						}
 					} 
+				case("delete"):
+					
 				
 				default:
 					break;
 				}
 			} else {
-				player.sendMessage("§cCommands: /onevsone [create,join, delete]");
+				player.sendMessage("§cCommands: /onevsone [create, join, delete]");
 			}
 		}
 		return false;
