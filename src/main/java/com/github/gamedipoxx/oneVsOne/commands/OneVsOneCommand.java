@@ -69,7 +69,7 @@ public class OneVsOneCommand implements CommandExecutor {
 					}
 					OneVsOne.getPlugin().saveConfig();
 					OneVsOne.getPlugin().reloadConfig();
-					player.sendMessage(Messages.PREFIX.getString() + );
+					player.sendMessage(Messages.PREFIX.getString() + Messages.CONFIGRELOADED.getString());
 					
 					break;
 				default:
