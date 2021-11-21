@@ -5,7 +5,8 @@ public enum Messages {
     TELEPORTTOLOBBY("§7Du wurdest zur Lobby teleportiert"), 
     NOARENAFOUND("§cEs konnte keine Arena gefunden werden"), 
     COMMANDS("§cCommands: /onevsone [create, join, delete]"),
-    NOARENAAVAIBLE("§cKeine Arena verfügbar!");
+    NOARENAAVAIBLE("§cKeine Arena verfügbar!"),
+    CONFIGRELOADED("§2Die Konfigurationen wurden neu geladen!");
  
     private String string;
  

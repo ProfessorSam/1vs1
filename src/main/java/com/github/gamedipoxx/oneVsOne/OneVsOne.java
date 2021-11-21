@@ -16,7 +16,9 @@ public class OneVsOne extends JavaPlugin{
 	private static MultiverseCore multiversecore;
 	@Override
 	public void onEnable() {
-
+		
+		saveDefaultConfig();
+		saveConfig();
 		plugin = this;
 		multiversecore = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
 		
@@ -24,6 +26,10 @@ public class OneVsOne extends JavaPlugin{
 	}
 	public static Collection<Arena> getArena() {
 		return arena;
+	}
+	
+	public static void setArena(ArrayList<Arena> arena) {
+		OneVsOne.arena = arena;
 	}
 	public static OneVsOne getPlugin() {
 		return plugin;

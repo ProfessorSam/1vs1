@@ -63,7 +63,15 @@ public class OneVsOneCommand implements CommandExecutor {
 						}
 					}
 					break;
-				
+				case("reload"):
+					if(args.length != 1) {
+						break;
+					}
+					OneVsOne.getPlugin().saveConfig();
+					OneVsOne.getPlugin().reloadConfig();
+					player.sendMessage(Messages.PREFIX.getString() + );
+					
+					break;
 				default:
 					break;
 				}
