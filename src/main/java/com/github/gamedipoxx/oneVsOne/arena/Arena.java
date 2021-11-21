@@ -1,7 +1,7 @@
 package com.github.gamedipoxx.oneVsOne.arena;
 
 import java.time.Instant;
-import java.util.UUID;
+import java.util.ArrayList;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Bukkit;
@@ -81,6 +81,10 @@ public class Arena {
 		}
 		worldmanager.deleteWorld(arenaworld.getName());
 		
+		ArrayList<Arena> arenalist = (ArrayList<Arena>) OneVsOne.getArena();
+		arenalist.remove(arena);
+		OneVsOne.setArena(arenalist);
+		
 	}
 	
 	public static Arena createAndRegisterArena() { //create a arena (Name based on the amout of arenas) and register it in the OneVsOne Class
@@ -90,24 +94,23 @@ public class Arena {
 		return arena;
 	}
 	
-	public static Arena getArena(String arenaname) {
-		Arena arena = null;
-		for(Arena i : OneVsOne.getArena()) {
-			if(i.getArenaName() == arenaname) {
-				arena = i;
+	public static Arena getArena(@NotNull String arenaname) {
+		for(Arena forlooparena : OneVsOne.getArena()) {
+			if(forlooparena.getArenaName().equalsIgnoreCase(arenaname)) {
+				return forlooparena;
 			}
 			else {
 				continue;
 			}
 		}
-		return arena;
+		return null;
 	}
 	
 	public int getPlayerCount() {
 		return playercount;
 	}
 	
-	public UUID getArenaUuid() {
+	public String getArenaUuid() {
 		return arenaUuid;
 	}
 	

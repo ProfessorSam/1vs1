@@ -22,18 +22,23 @@ public class OneVsOneCommand implements CommandExecutor {
 				switch (args[0]) {
 				case ("create"):
 					player.sendMessage("§cArena: " + Arena.createAndRegisterArena().getArenaName());
+					break;
 				case ("join"):
 					if (args.length == 2) {
 						if(OneVsOne.getArena().size() == 0) {
-							player.sendMessage("§cKeine Arena verfügbar!");
+							System.out.println("");
+							player.sendMessage(Messages.PREFIX.getString() + Messages.NOARENAAVAIBLE);
 							break;
 						}
 						for (Arena arena : OneVsOne.getArena()) {
 							if(arena.getArenaName().equalsIgnoreCase(args[1])) {
 								arena.joinPlayer(player);
+								break;
 							}
+							break;
 						}
-					} 
+					}
+					break;
 				case("delete"):
 					if(args.length != 2) {
 						break;
@@ -44,15 +49,29 @@ public class OneVsOneCommand implements CommandExecutor {
 					else {
 						Arena.deleteAndUnregisterArena(Arena.getArena(args[1]));
 					}
+					break;
+				case("list"):
+					if(args.length != 1) {
+						break;
+					}
+					if(OneVsOne.getArena().size() == 0) {
+						player.sendMessage(Messages.PREFIX.getString() + Messages.NOARENAFOUND.getString());
+					}
+					else {
+						for(Arena arena : OneVsOne.getArena()) {
+							player.sendMessage(Messages.PREFIX.getString() + arena.getArenaName());
+						}
+					}
+					break;
 				
 				default:
 					break;
 				}
 			} else {
-				player.sendMessage("§cCommands: /onevsone [create, join, delete]");
+				player.sendMessage(Messages.PREFIX.getString() + Messages.COMMANDS.getString());
 			}
 		}
 		return false;
-
+		
 	}
 }

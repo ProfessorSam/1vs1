@@ -4,7 +4,8 @@ public enum Messages {
     PREFIX("§7[§f§lGamedipoxx§r§7] §r"), 
     TELEPORTTOLOBBY("§7Du wurdest zur Lobby teleportiert"), 
     NOARENAFOUND("§cEs konnte keine Arena gefunden werden"), 
-    DEV("https://dev.domain.com:21323/");
+    COMMANDS("§cCommands: /onevsone [create, join, delete]"),
+    NOARENAAVAIBLE("§cKeine Arena verfügbar!");
  
     private String string;
  
