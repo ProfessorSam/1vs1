@@ -72,6 +72,16 @@ public class OneVsOneCommand implements CommandExecutor {
 					player.sendMessage(Messages.PREFIX.getString() + Messages.CONFIGRELOADED.getString());
 					
 					break;
+				case("leave"):
+					for(Arena arena : OneVsOne.getArena()) {
+						for(Player forPlayer : arena.getPlayers()) {
+							if(forPlayer == player) {
+								arena.removePlayer(player);
+								break;
+							}
+						}
+					}
+					break;
 				default:
 					break;
 				}

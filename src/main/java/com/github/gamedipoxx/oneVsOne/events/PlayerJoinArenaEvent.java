@@ -7,16 +7,20 @@ import org.bukkit.event.HandlerList;
 import com.github.gamedipoxx.oneVsOne.arena.Arena;
 
 public class PlayerJoinArenaEvent extends Event{
-	private static final HandlerList handlers = new HandlerList();
+	private static final HandlerList HANDLERS = new HandlerList();
 	private Arena arena;
 	private Player player;
+	
 	public PlayerJoinArenaEvent(Arena arena, Player player){
 		this.player = player;
 		this.arena = arena;
 	}
-	@Override
+	
+	public static HandlerList getHandlerList() {
+		return HANDLERS;
+	}
 	public HandlerList getHandlers() {
-		return handlers;
+		return HANDLERS;
 	}
 	public Arena getArena() {
 		return arena;

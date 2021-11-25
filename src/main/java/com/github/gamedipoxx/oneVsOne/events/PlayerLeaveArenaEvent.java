@@ -8,7 +8,7 @@ import com.github.gamedipoxx.oneVsOne.arena.Arena;
 
 public class PlayerLeaveArenaEvent extends Event{
 
-	private static final HandlerList handlers = new HandlerList();
+	private static final HandlerList HANDLERS = new HandlerList();
 	private Arena arena;
 	private Player player;
 	public PlayerLeaveArenaEvent(Arena arena, Player player){
@@ -17,7 +17,10 @@ public class PlayerLeaveArenaEvent extends Event{
 	}
 	@Override
 	public HandlerList getHandlers() {
-		return handlers;
+		return HANDLERS;
+	}
+	public static HandlerList getHandlerList() {
+		return HANDLERS;
 	}
 	public Arena getArena() {
 		return arena;
