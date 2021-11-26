@@ -3,6 +3,8 @@ package com.github.gamedipoxx.oneVsOne.arena;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Bukkit;
@@ -29,7 +31,6 @@ public class Arena {
 	private Location spawn2;
 	private GameState gameState;
 	private Collection<Player> players = new ArrayList<Player>();
-	private World world;
 	
 	//TODO Gamerule /gamerule doImmediateRespawm to true
 	public Arena(@NotNull String arenaname) {
@@ -134,6 +135,13 @@ public class Arena {
 			}
 		}
 		return null;
+	}
+	
+	public List<Location> getSpawns(){
+		List<Location> list = new ArrayList<>();
+		list.add(spawn1);
+		list.add(spawn2);
+		return list;
 	}
 	
 	public int getPlayerCount() {

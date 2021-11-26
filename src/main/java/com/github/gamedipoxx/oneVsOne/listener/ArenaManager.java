@@ -1,7 +1,12 @@
 package com.github.gamedipoxx.oneVsOne.listener;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,14 +14,13 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.event.player.PlayerPickupArrowEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.gamedipoxx.oneVsOne.Messages;
 import com.github.gamedipoxx.oneVsOne.OneVsOne;
 import com.github.gamedipoxx.oneVsOne.arena.Arena;
+import com.github.gamedipoxx.oneVsOne.arena.GameCountDown;
 import com.github.gamedipoxx.oneVsOne.arena.GameState;
 import com.github.gamedipoxx.oneVsOne.arena.ScheduledArenaDelete;
 import com.github.gamedipoxx.oneVsOne.events.GameStateChangeEvent;
@@ -65,11 +69,21 @@ public class ArenaManager implements Listener{
 		}
 		if(before == GameState.STARTING && after == GameState.INGAME) {
 			arena.broadcastMessage(Messages.PREFIX.getString() + Messages.STARTINGGAME.getString());
-			giveInv(arena);
 			for(Player player : arena.getPlayers()) {
-				player.sendTitle(Messages.STARTTITLE.getString(), Messages.STARTSUBTITLE.getString(), 10, 40, 10);
-				player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 0.5F, 1F);
+				player.getInventory().clear();
+				player.setHealth(20);
+				player.setFoodLevel(20);
 			}
+			List<Location> spawns = arena.getSpawns();
+			for(Player forplayer : arena.getPlayers()) {
+				Location spawn = spawns.get(0);
+				forplayer.teleport(spawn);
+				spawns.remove(0);
+			}
+			new GameCountDown(arena);
+			giveInv(arena);
+			
+			
 		}
 		if(before == GameState.INGAME && after == GameState.ENDING) {
 			for(Player player : arena.getPlayers()) {
@@ -78,6 +92,9 @@ public class ArenaManager implements Listener{
 				player.setFoodLevel(20);
 			}
 			new ScheduledArenaDelete(arena);
+			
+			
+			
 		}
 		
 		
