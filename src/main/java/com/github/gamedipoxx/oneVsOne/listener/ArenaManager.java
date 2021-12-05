@@ -1,12 +1,9 @@
 package com.github.gamedipoxx.oneVsOne.listener;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,8 +13,10 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 import com.github.gamedipoxx.oneVsOne.Messages;
+import com.github.gamedipoxx.oneVsOne.MySQLManager;
 import com.github.gamedipoxx.oneVsOne.OneVsOne;
 import com.github.gamedipoxx.oneVsOne.arena.Arena;
 import com.github.gamedipoxx.oneVsOne.arena.GameCountDown;
@@ -60,6 +59,9 @@ public class ArenaManager implements Listener{
 	}
 	@EventHandler
 	public void onGameStateChangeEvent(GameStateChangeEvent event) {
+		
+		MySQLManager.updateArena(event.getArena());	//Update Database
+		
 		Arena arena = event.getArena();
 		GameState before = event.getBefore();
 		GameState after = event.getAfter();
@@ -73,6 +75,9 @@ public class ArenaManager implements Listener{
 				player.getInventory().clear();
 				player.setHealth(20);
 				player.setFoodLevel(20);
+				for(PotionEffect effect : player.getActivePotionEffects()) {
+					player.removePotionEffect(effect.getType());
+				}
 			}
 			List<Location> spawns = arena.getSpawns();
 			for(Player forplayer : arena.getPlayers()) {
@@ -90,6 +95,9 @@ public class ArenaManager implements Listener{
 				player.getInventory().clear();
 				player.setHealth(20);
 				player.setFoodLevel(20);
+				for(PotionEffect effect : player.getActivePotionEffects()) {
+					player.removePotionEffect(effect.getType());
+				}
 			}
 			new ScheduledArenaDelete(arena);
 			
@@ -105,7 +113,7 @@ public class ArenaManager implements Listener{
 		Player player = (Player) event.getEntity();
 		for(Arena arena : OneVsOne.getArena()) {
 			for(Player arenaplayer : arena.getPlayers()) {
-				if(arenaplayer == player) {
+				if(arenaplayer == player && arena.getGameState() == GameState.INGAME) {
 					event.setDeathMessage(" ");
 					event.setKeepInventory(true);
 					event.setDroppedExp(0);
@@ -116,6 +124,7 @@ public class ArenaManager implements Listener{
 							arena.broadcastMessage(Messages.PREFIX.getString() + winPlayer.getDisplayName() + " " + Messages.PLAYERWIN.getString());
 						}
 					}
+					player.spigot().respawn();
 				}
 			}
 		}
@@ -149,19 +158,13 @@ public class ArenaManager implements Listener{
 		}
 	}
 	
-	//TODO Multiple Kits
 	private void giveInv(Arena arena) {
 		for(Player player : arena.getPlayers()) {
-			player.getInventory().clear();
-			player.getInventory().setItem(0, new ItemStack(Material.IRON_SWORD));
-			player.getInventory().setItem(1, new ItemStack(Material.BOW));
-			player.getInventory().setItem(2, new ItemStack(Material.FISHING_ROD));
-			player.getInventory().setItem(8, new ItemStack(Material.COOKED_BEEF, 32));
-			player.getInventory().setItem(7, new ItemStack(Material.ARROW, 10));
-			player.getInventory().setItem(100, new ItemStack(Material.LEATHER_BOOTS));
-			player.getInventory().setItem(101, new ItemStack(Material.LEATHER_LEGGINGS));
-			player.getInventory().setItem(102, new ItemStack(Material.LEATHER_CHESTPLATE));
-			player.getInventory().setItem(103, new ItemStack(Material.LEATHER_HELMET));
+			for (Entry<Integer, ItemStack> entry : arena.getKit().getInv().entrySet()) {
+			    Integer key = entry.getKey();
+			    ItemStack value = entry.getValue();
+			    player.getInventory().setItem(key, value);
+			}
 		}
 	}
 }

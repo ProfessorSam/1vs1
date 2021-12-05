@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.gamedipoxx.oneVsOne.arena.Arena;
-import com.github.gamedipoxx.oneVsOne.arena.GameCountDown;
 import com.github.gamedipoxx.oneVsOne.commands.OneVsOneCommand;
 import com.github.gamedipoxx.oneVsOne.listener.ArenaManager;
 import com.github.gamedipoxx.oneVsOne.listener.PlayerMoveEventCancel;
@@ -28,11 +27,15 @@ public class OneVsOne extends JavaPlugin{
 		this.getCommand("OneVsOne").setExecutor(new OneVsOneCommand());
 		getServer().getPluginManager().registerEvents(new ArenaManager(), this);
 		getServer().getPluginManager().registerEvents(new PlayerMoveEventCancel(), this);
+		if (!MySQLManager.init()) {
+			getServer().getPluginManager().disablePlugin(this);
+		}
 		//getServer().getPluginManager().registerEvents(new EventDebugger(), this); //USE THIS JUST FOR DEBUG PURPOSE!
 	}
 	
 	@Override
 	public void onDisable() {
+		MySQLManager.purgeDatabase();
 		for(Arena forarena : arena) {
 			Arena.deleteAndUnregisterArena(forarena);
 		}

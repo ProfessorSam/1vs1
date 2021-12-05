@@ -15,7 +15,6 @@ public class GameCountDown implements Listener {
 	private int taskId;
 	private static List<Player> players = new ArrayList<Player>();
 	
-	
 	public static List<Player> getPlayers() {
 		return players;
 	}

@@ -3,11 +3,12 @@ package com.github.gamedipoxx.oneVsOne.arena;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import com.github.gamedipoxx.oneVsOne.Messages;
+import com.github.gamedipoxx.oneVsOne.MySQLManager;
 import com.github.gamedipoxx.oneVsOne.OneVsOne;
 import com.github.gamedipoxx.oneVsOne.events.GameStateChangeEvent;
 import com.github.gamedipoxx.oneVsOne.events.PlayerJoinArenaEvent;
@@ -30,24 +32,37 @@ public class Arena {
 	private Location spawn1;
 	private Location spawn2;
 	private GameState gameState;
+	private Kit kit;
 	private Collection<Player> players = new ArrayList<Player>();
 	
-	//TODO Gamerule /gamerule doImmediateRespawm to true
 	public Arena(@NotNull String arenaname) {
-		arenaUuid = "" + Instant.now().getEpochSecond() + RandomUtils.nextInt();
+		arenaUuid = "" + Instant.now().getEpochSecond() + RandomUtils.nextInt();	 //generate a uuid
+		//Check if Arenatemplete is loaded and vailble
 		if(Bukkit.getWorld(arenaname) == null) {
 			OneVsOne.getPlugin().getLogger().warning("Cant find world " + arenaname);
 			Bukkit.getServer().getPluginManager().disablePlugin(OneVsOne.getPlugin());
 		}
+		
+		//worldstuff
 		worldname = arenaUuid;
 		worldmanager = OneVsOne.getMultiversecore().getMVWorldManager(); //set Multiverse wolrdmanager
 		worldmanager.cloneWorld(arenaname, worldname); //clone world
+		Bukkit.getWorld(arenaname).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+		Bukkit.getWorld(arenaname).setGameRule(GameRule.DO_MOB_SPAWNING, false);
+		Bukkit.getWorld(arenaname).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		Bukkit.getWorld(arenaname).setGameRule(GameRule.DO_WEATHER_CYCLE, false);
 		
+		
+		//playercound & Gamestate init
 		playercount = 0;
 		gameState = GameState.WAITING;
 		
+		//Generate Spawns
 		spawn1 = initSpawn(1);
 		spawn2 = initSpawn(2);
+		
+		//random kit
+		this.kit = Kit.getRandom();
 		
 		
 	}
@@ -112,6 +127,8 @@ public class Arena {
 		}
 		worldmanager.deleteWorld(arenaworld.getName());
 		
+		MySQLManager.deleteArena(arena); //Purge Arena from Database
+		
 		ArrayList<Arena> arenalist = (ArrayList<Arena>) OneVsOne.getArena();
 		arenalist.remove(arena);
 		OneVsOne.setArena(arenalist);
@@ -120,7 +137,11 @@ public class Arena {
 	
 	public static Arena createAndRegisterArena() { //create a arena (Name based on the amout of arenas) and register it in the OneVsOne Class
 		Arena arena = new Arena(OneVsOne.getPlugin().getConfig().getString("Arenaworld"));
-		OneVsOne.getArena().add(arena);
+		Collection<Arena> arenaCollection = OneVsOne.getArena();
+		arenaCollection.add(arena);
+		OneVsOne.setArena(new ArrayList<>(arenaCollection));
+		MySQLManager.addArena(arena); //Add Arena to Database
+		
 		return arena;
 	}
 	
@@ -169,6 +190,12 @@ public class Arena {
 	public Collection<Player> getPlayers() {
 		return players;
 	}
+
+	public Kit getKit() {
+		return kit;
+	}
+	
+	
 
 	
 }

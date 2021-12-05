@@ -18,3 +18,9 @@ Lobby:
    Z: 100
    Pitch: 100
    Yaw: 100
+Database:
+  Host: localhost
+  Port: 3306
+  Database: db
+  User: username
+  Password: passy

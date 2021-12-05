@@ -21,20 +21,22 @@ public class OneVsOneCommand implements CommandExecutor {
 			if (args.length >= 1) {
 				switch (args[0]) {
 				case ("create"):
-					player.sendMessage("§cArena: " + Arena.createAndRegisterArena().getArenaName());
+					String message = "§cArena: " + Arena.createAndRegisterArena().getArenaName();
+					player.sendMessage(message);
+					OneVsOne.getPlugin().getLogger().info(message);
 					break;
 				case ("join"):
 					if (args.length == 2) {
 						if(OneVsOne.getArena().size() == 0) {
 							System.out.println("");
-							player.sendMessage(Messages.PREFIX.getString() + Messages.NOARENAAVAIBLE);
+							player.sendMessage(Messages.PREFIX.getString() + Messages.NOARENAAVAIBLE.getString());
 							break;
 						}
 						for (Arena arena : OneVsOne.getArena()) {
 							if(arena.getArenaName().equalsIgnoreCase(args[1])) {
 								arena.joinPlayer(player);
-								break;
 							}
+							player.sendMessage(Messages.NOARENAFOUND.getString());
 							break;
 						}
 					}
