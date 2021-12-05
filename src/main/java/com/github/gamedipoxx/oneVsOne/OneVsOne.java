@@ -2,6 +2,7 @@ package com.github.gamedipoxx.oneVsOne;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,8 +37,10 @@ public class OneVsOne extends JavaPlugin{
 	@Override
 	public void onDisable() {
 		MySQLManager.purgeDatabase();
-		for(Arena forarena : arena) {
-			Arena.deleteAndUnregisterArena(forarena);
+		@SuppressWarnings("unchecked")
+		ArrayList<Arena> templist = (ArrayList<Arena>) arena.clone();
+		for(Arena arena : templist) {
+			Arena.deleteAndUnregisterArenaForOnDisable(arena);
 		}
 	}
 	public static Collection<Arena> getArena() {

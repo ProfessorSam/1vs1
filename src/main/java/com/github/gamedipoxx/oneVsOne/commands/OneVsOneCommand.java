@@ -28,17 +28,16 @@ public class OneVsOneCommand implements CommandExecutor {
 				case ("join"):
 					if (args.length == 2) {
 						if(OneVsOne.getArena().size() == 0) {
-							System.out.println("");
 							player.sendMessage(Messages.PREFIX.getString() + Messages.NOARENAAVAIBLE.getString());
 							break;
 						}
 						for (Arena arena : OneVsOne.getArena()) {
 							if(arena.getArenaName().equalsIgnoreCase(args[1])) {
 								arena.joinPlayer(player);
+								break;
 							}
-							player.sendMessage(Messages.NOARENAFOUND.getString());
-							break;
 						}
+						player.sendMessage(Messages.PREFIX.getString() + Messages.NOARENAFOUND.getString());
 					}
 					break;
 				case("delete"):

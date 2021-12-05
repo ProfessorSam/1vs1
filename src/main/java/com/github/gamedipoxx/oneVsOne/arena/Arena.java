@@ -135,6 +135,24 @@ public class Arena {
 		
 	}
 	
+	public static void deleteAndUnregisterArenaForOnDisable(Arena arena) { //Just for OneVsOne.onDisable()
+		World arenaworld = Bukkit.getWorld(arena.getArenaName());
+		if(arenaworld == null) {
+			return;
+		}
+		for(Player player : arenaworld.getPlayers()) {
+			arena.removePlayer(player);
+			player.sendMessage(Messages.PREFIX.getString() + Messages.TELEPORTTOLOBBY.getString());
+			Bukkit.getServer().getPluginManager().callEvent(new PlayerLeaveArenaEvent(arena, player));
+		}
+		worldmanager.deleteWorld(arenaworld.getName());
+		
+		ArrayList<Arena> arenalist = (ArrayList<Arena>) OneVsOne.getArena();
+		arenalist.remove(arena);
+		OneVsOne.setArena(arenalist);
+		
+	}
+	
 	public static Arena createAndRegisterArena() { //create a arena (Name based on the amout of arenas) and register it in the OneVsOne Class
 		Arena arena = new Arena(OneVsOne.getPlugin().getConfig().getString("Arenaworld"));
 		Collection<Arena> arenaCollection = OneVsOne.getArena();
